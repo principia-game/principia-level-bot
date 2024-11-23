@@ -1,24 +1,12 @@
+#!/usr/bin/php
 <?php
 require 'mastodon.php';
 require 'config.php';
 require $archive_dir.'/conf/config.php';
 require $archive_dir.'/lib/mysql.php';
-require $archive_dir.'/lib/public_levels.php';
+require $archive_dir.'/lib/levellist.php';
 
 $mastodon = new MastodonAPI($token, $base_url);
-
-/*
-$response = $mastodon->uploadMedia([
-	'file' => curl_file_create('test.png', 'image/png', 'test.png'),
-]);
-
-$mastodon->postStatus([
-	'status'      => 'Test status',
-	'visibility'  => 'private',
-	'language'    => 'en',
-	'media_ids[]' => $response['id'],
-]);
-*/
 
 while (true) {
 	$level = fetch("SELECT l.*,u.id u_id,u.name u_name FROM levels l JOIN users u ON l.author = u.id WHERE l.id = ?",
@@ -51,7 +39,7 @@ $response = $mastodon->uploadMedia([
 
 $mastodon->postStatus([
 	'status'      => $status,
-	'visibility'  => 'direct',
+	'visibility'  => 'unlisted',
 	'language'    => 'en',
 	'media_ids[]' => $response['id'],
 ]);
